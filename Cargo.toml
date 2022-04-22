@@ -1,0 +1,21 @@
+[package]
+name = "speedy_2d_test"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+speedy2d = "1"
+colored = "2"
+flo_curves = "0.6"
+nalgebra = "0.30"
+num = "0.4"
+
+[dependencies.nalgebra-lapack]
+version = "0.21.0"
+default-features = false
+features = [ "openblas" ]
+
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/ah/Documents/rust/speedy_2d_test/target/debug/build/openblas-src-ac30d6f54a19b0df/out
+
