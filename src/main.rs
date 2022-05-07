@@ -1,19 +1,13 @@
 mod bezier_interpolation;
 use bezier_interpolation::*;
 
-use std::convert::identity;
-use std::fmt::Pointer;
-use std::ops::Mul;
-use std::rc::Rc; 
 use std::time::{Instant, Duration};
 use std::string::String;
 
-use num::traits::real;
 use speedy2d::Window;
 use speedy2d::window::{WindowHelper, WindowHandler, MouseButton};
 use speedy2d::color::Color;
 use speedy2d::Graphics2D;
-use speedy2d::font::{TextLayout, TextOptions, Font, FormattedTextBlock};
 use speedy2d::dimen::Vector2;
 
 struct PointerStatus {
@@ -28,8 +22,7 @@ impl PointerStatus {
     }
 }
 
-struct AbbesWindowHandler {
-    font: Font,
+struct WindowContext {
     str_buffer: String,
     pointer_status: PointerStatus,
     circle_pos: Vec<Vec2D>,
@@ -39,7 +32,7 @@ struct AbbesWindowHandler {
     iterations: usize
 }
 
-impl WindowHandler for AbbesWindowHandler {
+impl WindowHandler for WindowContext {
     fn on_draw(&mut self, helper: &mut WindowHelper<()>, graphics: &mut Graphics2D)
     {
         graphics.clear_screen(Color::WHITE);
@@ -86,22 +79,16 @@ impl WindowHandler for AbbesWindowHandler {
         self.iterations += 1;
         self.prev_time = curr_time;
         self.accumulated_duration += duration;
+        
         // Request that we draw another frame once this one has finished
         helper.request_redraw();
     }
 
-    fn on_mouse_move(&mut self, helper: &mut WindowHelper<()>, position: Vector2<f32>) {
+    fn on_mouse_move(&mut self, _helper: &mut WindowHelper<()>, position: Vector2<f32>) {
         self.pointer_status.position = position;
-
-        if self.pointer_status.l_btn_pushed {
-            // self.circle_pos.push(position);
-        }
     }
 
-    fn on_mouse_button_down(&mut self, helper: &mut WindowHelper<()>, button: MouseButton) {
-        // println!("{} on_mouse_button_down", "Callback: ".bold().green());
-        // println!("{:?}", button);
-
+    fn on_mouse_button_down(&mut self, _helper: &mut WindowHelper<()>, button: MouseButton) {
         match button {
             MouseButton::Left => {
                 self.pointer_status.l_btn_pushed = true;
@@ -115,10 +102,7 @@ impl WindowHandler for AbbesWindowHandler {
         }
     }
 
-    fn on_mouse_button_up(&mut self, helper: &mut WindowHelper<()>, button: speedy2d::window::MouseButton) {
-        // println!("{} on_mouse_button_up", "Callback: ".bold().green());
-        // println!("{:?}", button);
-
+    fn on_mouse_button_up(&mut self, _helper: &mut WindowHelper<()>, button: speedy2d::window::MouseButton) {
         match button {
             MouseButton::Left => self.pointer_status.l_btn_pushed = false,
             MouseButton::Right => self.pointer_status.r_btn_pushed = false,
@@ -126,7 +110,7 @@ impl WindowHandler for AbbesWindowHandler {
         }
     }
 
-    fn on_keyboard_char(&mut self, helper: &mut WindowHelper<()>, unicode_codepoint: char) {
+    fn on_keyboard_char(&mut self, _helper: &mut WindowHelper<()>, unicode_codepoint: char) {
         if unicode_codepoint == '\u{8}' {
             self.str_buffer.pop();
         } else {
@@ -136,10 +120,8 @@ impl WindowHandler for AbbesWindowHandler {
 }
 
 fn main() {
-    let window = Window::new_centered("Abbes testfönster <3", (1200, 600)).unwrap();
-    let font = Font::new(include_bytes!("../assets/Roboto-Regular.ttf")).unwrap();
-    let mut window_state = AbbesWindowHandler {
-        font,
+    let window = Window::new_centered("Bezier Interpolation", (1200, 600)).unwrap();
+    let window_state = WindowContext {
         str_buffer: String::new(),
         pointer_status: PointerStatus::new(), 
         circle_pos: Vec::new(), 

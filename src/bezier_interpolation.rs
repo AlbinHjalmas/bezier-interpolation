@@ -1,8 +1,7 @@
 extern crate nalgebra as na;
-use na::{Const, Dynamic, ArrayStorage, VecStorage, Matrix, DMatrix, DimAdd};
+use na::{Const, Dynamic, ArrayStorage, VecStorage, Matrix};
 
 pub type MatDyn = Matrix<f32, Dynamic, Dynamic, VecStorage<f32, Dynamic, Dynamic>>;
-pub type VecDyn = Matrix<f32, Const<1>, Dynamic, VecStorage<f32, Const<1>, Dynamic>>;
 pub type Mat2D = Matrix<f32, Dynamic, Const<2>, VecStorage<f32, Dynamic, Const<2>>>;
 pub type Vec2D = Matrix<f32, Const<1>, Const<2>, ArrayStorage<f32, 1, 2>>;
 
